@@ -96,3 +96,22 @@ func (pr *ProductRepository) GetProductByID(id_product int) (*model.Product, err
 	query.Close()
 	return &product, nil
 }
+
+func (pr *ProductRepository) DeleteProduct(id_product int) error {
+
+	query, err := pr.connection.Prepare("DELETE FROM product WHERE id = $1")
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+
+	_, err = query.Exec(id_product)
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+
+	query.Close()
+
+	return nil
+}

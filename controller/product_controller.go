@@ -83,3 +83,37 @@ func (p *productController) GetProductsById(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, product)
 }
+
+
+func (p *productController) DeleteProduct(ctx *gin.Context) {
+
+	id := ctx.Param("productId")
+	if id == "" {
+		response:= model.Response{
+			Message: "Product id cannot be nil",
+		}
+		ctx.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	productId, err := strconv.Atoi(id)
+	if err != nil {
+		response := model.Response{
+			Message: "Product id must be a number",
+		}
+		ctx.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+
+	err = p.productUseCase.DeleteProduct(productId)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, err)
+		return
+	}
+	
+	response := model.Response{
+		Message: "Product deleted successfully",
+	}
+	ctx.JSON(http.StatusOK, response)
+}
